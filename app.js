@@ -30,6 +30,8 @@ const defaultSettings = {
   skinSmoothing: 0
 };
 
+const PREVIEW_MAX_DPR = 3;
+
 const controls = [
   ["brightness", "Brightness", -1, 1, 0.01],
   ["contrast", "Contrast", 0.65, 1.65, 0.01],
@@ -47,15 +49,15 @@ const controls = [
 
 const presets = [
   ["Natural", "linear-gradient(145deg,#66c28f,#4aa6b7)", { brightness: 0.04, contrast: 1.08, saturation: 1.08, shadows: 0.18, highlights: -0.12, warmth: 0.08, sharpness: 0.28, vignette: 0.05 }],
-  ["Portrait Pro", "linear-gradient(145deg,#ee8bb5,#c98a55)", { brightness: 0.08, contrast: 1.1, saturation: 1.04, shadows: 0.24, highlights: -0.18, warmth: 0.12, tint: 0.03, sharpness: 0.2, vignette: 0.12, blurBackground: 0.32, skinSmoothing: 0.45 }],
-  ["Cinematic", "linear-gradient(145deg,#227e83,#07090c)", { brightness: -0.02, contrast: 1.22, saturation: 0.92, shadows: 0.08, highlights: -0.25, warmth: -0.08, tint: 0.08, sharpness: 0.36, vignette: 0.32, grain: 0.12, blurBackground: 0.18 }],
+  ["Portrait Pro", "linear-gradient(145deg,#ee8bb5,#c98a55)", { brightness: 0.1, contrast: 1.16, saturation: 1.08, shadows: 0.34, highlights: -0.22, warmth: 0.14, tint: 0.03, sharpness: 0.42, vignette: 0.1, blurBackground: 0.08, skinSmoothing: 0.38 }],
+  ["Cinematic", "linear-gradient(145deg,#227e83,#07090c)", { brightness: 0, contrast: 1.3, saturation: 0.96, shadows: 0.16, highlights: -0.32, warmth: -0.1, tint: 0.08, sharpness: 0.48, vignette: 0.3, grain: 0.08, blurBackground: 0 }],
   ["Instagram Clean", "linear-gradient(145deg,#f5f5f1,#8fd5c4)", { brightness: 0.12, contrast: 1.12, saturation: 1.12, shadows: 0.26, highlights: -0.16, warmth: 0.06, sharpness: 0.24, vignette: 0.03, skinSmoothing: 0.16 }],
   ["Moody", "linear-gradient(145deg,#777,#050608)", { brightness: -0.1, contrast: 1.28, saturation: 0.82, shadows: -0.18, highlights: -0.22, warmth: -0.04, tint: 0.05, sharpness: 0.3, vignette: 0.45, grain: 0.18 }],
   ["Warm Film", "linear-gradient(145deg,#c9a246,#974d54)", { brightness: 0.05, contrast: 1.04, saturation: 0.96, shadows: 0.1, highlights: -0.2, warmth: 0.36, tint: 0.06, sharpness: 0.12, vignette: 0.18, grain: 0.22 }],
   ["Cold Urban", "linear-gradient(145deg,#527da6,#8c9399)", { brightness: -0.02, contrast: 1.2, saturation: 0.88, shadows: 0.02, highlights: -0.18, warmth: -0.34, tint: 0.04, sharpness: 0.42, vignette: 0.25, grain: 0.08 }],
   ["Black & White", "linear-gradient(145deg,#e8e8e8,#07090c)", { brightness: 0.02, contrast: 1.35, saturation: 0, shadows: 0.12, highlights: -0.18, sharpness: 0.5, vignette: 0.36, grain: 0.14 }],
-  ["Luxury Look", "linear-gradient(145deg,#705d83,#c6a85a)", { brightness: 0.06, contrast: 1.24, saturation: 1.02, shadows: 0.14, highlights: -0.24, warmth: 0.16, tint: 0.08, sharpness: 0.38, vignette: 0.28, grain: 0.05, blurBackground: 0.2, skinSmoothing: 0.2 }],
-  ["Soft Skin", "linear-gradient(145deg,#db9daf,#f0e7dc)", { brightness: 0.1, contrast: 1.02, saturation: 1.02, shadows: 0.22, highlights: -0.12, warmth: 0.12, tint: 0.04, sharpness: 0.08, vignette: 0.08, blurBackground: 0.22, skinSmoothing: 0.62 }]
+  ["Luxury Look", "linear-gradient(145deg,#705d83,#c6a85a)", { brightness: 0.08, contrast: 1.28, saturation: 1.08, shadows: 0.22, highlights: -0.28, warmth: 0.18, tint: 0.08, sharpness: 0.5, vignette: 0.24, grain: 0.03, blurBackground: 0, skinSmoothing: 0.18 }],
+  ["Soft Skin", "linear-gradient(145deg,#db9daf,#f0e7dc)", { brightness: 0.12, contrast: 1.08, saturation: 1.04, shadows: 0.28, highlights: -0.16, warmth: 0.12, tint: 0.04, sharpness: 0.18, vignette: 0.06, blurBackground: 0.04, skinSmoothing: 0.52 }]
 ];
 
 let sourceImage = null;
@@ -87,9 +89,11 @@ function updateHistoryButtons() {
 
 function fitCanvasToStage() {
   const rect = dropZone.getBoundingClientRect();
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const dpr = Math.min(window.devicePixelRatio || 1, PREVIEW_MAX_DPR);
   canvas.width = Math.max(1, Math.round(rect.width * dpr));
   canvas.height = Math.max(1, Math.round(rect.height * dpr));
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
 }
 
 async function loadFile(file) {
@@ -114,6 +118,10 @@ function drawSource(targetCtx, width, height) {
   const x = (width - drawWidth) / 2;
   const y = (height - drawHeight) / 2;
   targetCtx.clearRect(0, 0, width, height);
+  targetCtx.fillStyle = "#000";
+  targetCtx.fillRect(0, 0, width, height);
+  targetCtx.imageSmoothingEnabled = true;
+  targetCtx.imageSmoothingQuality = "high";
   targetCtx.drawImage(sourceBitmap, x, y, drawWidth, drawHeight);
   return { x, y, width: drawWidth, height: drawHeight };
 }
@@ -123,13 +131,13 @@ function processPixels(imageData, bounds, activeSettings) {
   const cx = bounds.x + bounds.width / 2;
   const cy = bounds.y + bounds.height / 2;
   const maxDist = Math.hypot(bounds.width / 2, bounds.height / 2);
-  const brightness = activeSettings.brightness * 44;
+  const brightness = activeSettings.brightness * 90;
   const contrast = activeSettings.contrast;
   const saturation = activeSettings.saturation;
-  const shadowLift = activeSettings.shadows * 36;
-  const highlightPull = activeSettings.highlights * 34;
-  const warmth = activeSettings.warmth * 24;
-  const tint = activeSettings.tint * 18;
+  const shadowLift = activeSettings.shadows * 82;
+  const highlightPull = activeSettings.highlights * 72;
+  const warmth = activeSettings.warmth * 34;
+  const tint = activeSettings.tint * 24;
   const vignette = activeSettings.vignette;
   const grain = activeSettings.grain;
   const skinSoft = activeSettings.skinSmoothing;
@@ -143,8 +151,8 @@ function processPixels(imageData, bounds, activeSettings) {
       let g = data[i + 1];
       let b = data[i + 2];
       const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-      const shadowWeight = Math.max(0, 1 - lum / 140);
-      const highlightWeight = Math.max(0, (lum - 150) / 105);
+      const shadowWeight = Math.max(0, 1 - lum / 150);
+      const highlightWeight = Math.max(0, (lum - 145) / 110);
 
       r += brightness + shadowLift * shadowWeight + highlightPull * highlightWeight + warmth + tint * 0.25;
       g += brightness + shadowLift * shadowWeight + highlightPull * highlightWeight - tint * 0.18;
@@ -159,12 +167,17 @@ function processPixels(imageData, bounds, activeSettings) {
       g = gray + (g - gray) * saturation;
       b = gray + (b - gray) * saturation;
 
+      const cinematic = Math.max(0, contrast - 1) * 12;
+      r += cinematic * 0.28;
+      g += cinematic * 0.08;
+      b -= cinematic * 0.16;
+
       if (skinSoft > 0) {
         const skinMask = r > 80 && g > 45 && b > 30 && r > b * 1.08 && r > g * 0.9;
         if (skinMask) {
-          r = r * (1 - skinSoft * 0.04) + 238 * skinSoft * 0.04;
-          g = g * (1 - skinSoft * 0.035) + 198 * skinSoft * 0.035;
-          b = b * (1 - skinSoft * 0.03) + 180 * skinSoft * 0.03;
+          r = r * (1 - skinSoft * 0.055) + 240 * skinSoft * 0.055;
+          g = g * (1 - skinSoft * 0.045) + 204 * skinSoft * 0.045;
+          b = b * (1 - skinSoft * 0.035) + 184 * skinSoft * 0.035;
         }
       }
 
@@ -197,7 +210,7 @@ function sharpen(targetCtx, bounds, amount) {
   const src = new Uint8ClampedArray(imageData.data);
   const data = imageData.data;
   const w = imageData.width;
-  const intensity = Math.min(amount * 0.35, 0.55);
+  const intensity = Math.min(amount * 0.48, 0.72);
   for (let y = 1; y < imageData.height - 1; y++) {
     for (let x = 1; x < imageData.width - 1; x++) {
       const i = (y * w + x) * 4;
@@ -235,35 +248,62 @@ function render(activeSettings = settings) {
   ctx.putImageData(processPixels(imageData, bounds, activeSettings), 0, 0);
   sharpen(ctx, bounds, activeSettings.sharpness);
 
-  if (activeSettings.blurBackground > 0) {
-    ctx.save();
-    ctx.globalAlpha = activeSettings.blurBackground * 0.18;
-    ctx.filter = `blur(${Math.round(activeSettings.blurBackground * 8)}px)`;
-    drawSource(ctx, canvas.width, canvas.height);
-    ctx.restore();
-    ctx.putImageData(processPixels(ctx.getImageData(0, 0, canvas.width, canvas.height), bounds, activeSettings), 0, 0);
-  }
+  applySoftEdgeBlur(activeSettings.blurBackground, bounds);
 }
 
 function autoEnhance() {
   if (!sourceBitmap) return;
   settings = {
-    brightness: 0.08,
-    contrast: 1.16,
-    saturation: 1.1,
-    shadows: 0.28,
-    highlights: -0.2,
-    warmth: 0.08,
+    brightness: 0.14,
+    contrast: 1.28,
+    saturation: 1.18,
+    shadows: 0.42,
+    highlights: -0.3,
+    warmth: 0.1,
     tint: 0.02,
-    sharpness: 0.42,
-    vignette: 0.12,
-    grain: 0.03,
-    blurBackground: 0.16,
-    skinSmoothing: 0.24
+    sharpness: 0.72,
+    vignette: 0.1,
+    grain: 0,
+    blurBackground: 0,
+    skinSmoothing: 0.22
   };
   updateSliders();
   commitHistory();
   render();
+}
+
+function applySoftEdgeBlur(amount, bounds) {
+  if (amount <= 0.001) return;
+
+  const snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  ctx.save();
+  ctx.filter = `blur(${Math.round(amount * 5)}px)`;
+  ctx.globalAlpha = Math.min(0.28, amount * 0.32);
+  ctx.drawImage(canvas, 0, 0);
+  ctx.restore();
+
+  const blurred = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = snapshot.data;
+  const blurData = blurred.data;
+  const cx = bounds.x + bounds.width / 2;
+  const cy = bounds.y + bounds.height / 2;
+  const radiusX = bounds.width * 0.42;
+  const radiusY = bounds.height * 0.42;
+
+  for (let y = 0; y < snapshot.height; y++) {
+    for (let x = 0; x < snapshot.width; x++) {
+      const i = (y * snapshot.width + x) * 4;
+      const dx = (x - cx) / radiusX;
+      const dy = (y - cy) / radiusY;
+      const edge = Math.max(0, Math.min(1, (Math.hypot(dx, dy) - 0.72) / 0.48)) * amount;
+      if (edge <= 0) continue;
+      data[i] = data[i] * (1 - edge) + blurData[i] * edge;
+      data[i + 1] = data[i + 1] * (1 - edge) + blurData[i + 1] * edge;
+      data[i + 2] = data[i + 2] * (1 - edge) + blurData[i + 2] * edge;
+    }
+  }
+
+  ctx.putImageData(snapshot, 0, 0);
 }
 
 function updateSliders() {
