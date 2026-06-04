@@ -32,3 +32,9 @@ SwiftUI MVP of a local iPhone photo editor focused on one-tap professional enhan
 Open `PhotoProEditor.xcodeproj` in Xcode on macOS, select an iPhone simulator or device, set your Apple development team if needed, then run.
 
 Camera capture requires a physical iPhone. The simulator can still import photos from the library.
+
+## Run Without a Mac
+
+The `web/` folder contains a Progressive Web App version for iPhone Safari. It runs locally in the browser, supports photo import/camera capture, auto enhance, presets, manual sliders, before/after comparison, save, share, and home-screen installation.
+
+When published with GitHub Pages, open the Pages URL on iPhone, tap Share, then choose Add to Home Screen.
