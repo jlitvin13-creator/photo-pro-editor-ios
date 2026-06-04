@@ -446,7 +446,9 @@ shareBtn.addEventListener("click", async () => {
 window.addEventListener("resize", render);
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js").catch(() => {});
+  navigator.serviceWorker.register("./sw.js?v=4").then((registration) => {
+    registration.update();
+  }).catch(() => {});
 }
 
 buildUI();

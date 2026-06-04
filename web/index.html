@@ -9,7 +9,7 @@
     <title>Pro Auto Edit</title>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=4" />
   </head>
   <body>
     <main class="app-shell">
@@ -19,16 +19,16 @@
           <h1>Pro Auto Edit</h1>
         </div>
         <div class="top-actions">
-          <button class="icon-button" id="undoBtn" title="Undo" disabled>↶</button>
-          <button class="icon-button" id="redoBtn" title="Redo" disabled>↷</button>
-          <button class="icon-button" id="resetBtn" title="Reset">⟲</button>
+          <button class="icon-button" id="undoBtn" title="Undo" disabled>U</button>
+          <button class="icon-button" id="redoBtn" title="Redo" disabled>R</button>
+          <button class="icon-button" id="resetBtn" title="Reset">0</button>
         </div>
       </header>
 
       <section class="preview-stage" id="dropZone">
         <canvas id="previewCanvas"></canvas>
         <div class="empty-state" id="emptyState">
-          <div class="empty-mark">◉</div>
+          <div class="empty-mark">+</div>
           <h2>Load a photo</h2>
           <p>One tap, brighter skin tones, cleaner contrast, cinematic color.</p>
           <div class="import-row">
@@ -79,6 +79,6 @@
       </section>
     </main>
 
-    <script src="./app.js"></script>
+    <script src="./app.js?v=4"></script>
   </body>
 </html>
