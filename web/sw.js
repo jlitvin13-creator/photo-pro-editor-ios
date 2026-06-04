@@ -1,4 +1,4 @@
-const CACHE_NAME = "pro-auto-edit-v1";
+const CACHE_NAME = "pro-auto-edit-v2";
 const ASSETS = [
   "./",
   "./index.html",
