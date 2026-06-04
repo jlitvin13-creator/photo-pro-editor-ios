@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#050608" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Pro Auto Edit" />
+    <title>Pro Auto Edit</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Local photo editor</p>
+          <h1>Pro Auto Edit</h1>
+        </div>
+        <div class="top-actions">
+          <button class="icon-button" id="undoBtn" title="Undo" disabled>↶</button>
+          <button class="icon-button" id="redoBtn" title="Redo" disabled>↷</button>
+          <button class="icon-button" id="resetBtn" title="Reset">⟲</button>
+        </div>
+      </header>
+
+      <section class="preview-stage" id="dropZone">
+        <canvas id="previewCanvas"></canvas>
+        <div class="empty-state" id="emptyState">
+          <div class="empty-mark">◉</div>
+          <h2>Load a photo</h2>
+          <p>One tap, brighter skin tones, cleaner contrast, cinematic color.</p>
+          <div class="import-row">
+            <label class="primary-button">
+              Gallery
+              <input id="fileInput" type="file" accept="image/*" hidden />
+            </label>
+            <label class="secondary-button">
+              Camera
+              <input id="cameraInput" type="file" accept="image/*" capture="environment" hidden />
+            </label>
+          </div>
+        </div>
+        <div class="compare-badge" id="compareBadge">After</div>
+      </section>
+
+      <section class="tool-panel">
+        <div class="hero-actions">
+          <button class="primary-button" id="autoBtn">Auto Enhance</button>
+          <button class="secondary-button" id="compareBtn">Before / After</button>
+        </div>
+
+        <nav class="tabs" aria-label="Editor tools">
+          <button class="tab active" data-tab="presets">Presets</button>
+          <button class="tab" data-tab="adjust">Adjust</button>
+          <button class="tab" data-tab="export">Export</button>
+        </nav>
+
+        <div class="panel active" id="presetsPanel">
+          <div class="preset-strip" id="presetStrip"></div>
+        </div>
+
+        <div class="panel" id="adjustPanel">
+          <div class="slider-list" id="sliderList"></div>
+        </div>
+
+        <div class="panel" id="exportPanel">
+          <div class="quality-group">
+            <button class="quality active" data-quality="0.96">High</button>
+            <button class="quality" data-quality="0.82">Medium</button>
+          </div>
+          <div class="export-row">
+            <button class="primary-button" id="saveBtn">Save</button>
+            <button class="secondary-button" id="shareBtn">Share</button>
+          </div>
+          <p class="export-note">Processing happens locally in your browser. No photo is uploaded.</p>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
